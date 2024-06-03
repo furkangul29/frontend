@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import Admin from "./pages/Admin";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Error404 from "./pages/Error404";
 import Register from "./pages/Register";
@@ -10,8 +10,8 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/admin",
-    element: <Admin />,
+    path: "/home",
+    element: <Home />,
   },
   { path: "/register", element: <Register /> },
   {
