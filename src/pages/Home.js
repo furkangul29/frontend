@@ -35,13 +35,16 @@ function Home() {
   };
 
   const handleDelete = async (employee) => {
-    try {
-      await axios.delete(
-        `http://localhost:5000/api/delete-employee/${employee._id}`
-      );
-      setEmployees(employees.filter((e) => e._id !== employee._id));
-    } catch (error) {
-      console.error("Error deleting employee:", error);
+    let confirmDelete = window.confirm("Delete item forever?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(
+          `http://localhost:5000/api/employee/${employee._id}`
+        );
+        setEmployees(employees.filter((e) => e._id !== employee._id));
+      } catch (error) {
+        console.error("Error deleting employee:", error);
+      }
     }
   };
 

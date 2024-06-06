@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Error404 from "./pages/Error404";
 import Register from "./pages/Register";
+import DataTable from "./Components/Tables/DataTable";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: <Error404 />,
+  },
+  {
+    path: "/data-table",
+    element: <DataTable />,
   },
 ]);
 

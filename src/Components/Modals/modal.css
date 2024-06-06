@@ -1,0 +1,6 @@
+.modal-bottom {
+  position: fixed;
+  bottom: 0;
+  margin: 0; /* Optionally remove margin for full width */
+  width: 100%; /* Optionally set width to full width */
+}
