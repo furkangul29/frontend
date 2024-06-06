@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "flowbite";
+import EditModal from "./EditModal"; // EditModal bileşenini içe aktarın
 
 function Home() {
-  const [employees, setEmployees] = useState([]); // Başlangıçta boş bir dizi
+  const [employees, setEmployees] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -11,8 +14,6 @@ function Home() {
         const response = await axios.get(
           "http://localhost:5000/api/getAll-employee"
         );
-        console.log(response.data); // Yanıtı konsola yazdır
-        // Yanıtın içindeki 'data' anahtarına erişerek diziyi kontrol et
         if (Array.isArray(response.data)) {
           setEmployees(response.data);
         } else if (Array.isArray(response.data.data)) {
@@ -28,44 +29,49 @@ function Home() {
     fetchEmployees();
   }, []);
 
+  const handleEdit = (employee) => {
+    setSelectedEmployee(employee);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (employee) => {
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/delete-employee/${employee._id}`
+      );
+      setEmployees(employees.filter((e) => e._id !== employee._id));
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEmployee(null);
+  };
+
+  const handleSubmitModal = async (formData) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/update-employee/${selectedEmployee._id}`,
+        formData
+      );
+      setEmployees(
+        employees.map((employee) =>
+          employee._id === selectedEmployee._id ? response.data : employee
+        )
+      );
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error updating employee:", error);
+    }
+  };
+
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <div className="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
-        <div className="relative">
-          <div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-            <svg
-              className="w-4 h-4 text-gray-500 dark:text-gray-400"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 20"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th scope="col" className="p-4">
-              <div className="flex items-center">
-                <input
-                  id="checkbox-all-search"
-                  type="checkbox"
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label htmlFor="checkbox-all-search" className="sr-only">
-                  checkbox
-                </label>
-              </div>
-            </th>
             <th scope="col" className="px-6 py-3">
               Name
             </th>
@@ -87,29 +93,17 @@ function Home() {
             <th scope="col" className="px-6 py-3">
               Salary
             </th>
+            <th scope="col" className="px-6 py-3">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
           {employees.map((employee) => (
             <tr
-              key={employee.tc}
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+              key={employee._id}
+              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
             >
-              <td className="w-4 p-4">
-                <div className="flex items-center">
-                  <input
-                    id={`checkbox-${employee.tc}`}
-                    type="checkbox"
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    htmlFor={`checkbox-${employee.tc}`}
-                    className="sr-only"
-                  >
-                    checkbox
-                  </label>
-                </div>
-              </td>
               <td className="px-6 py-4">{employee.name}</td>
               <td className="px-6 py-4">{employee.lastName}</td>
               <td className="px-6 py-4">{employee.phone}</td>
@@ -117,10 +111,32 @@ function Home() {
               <td className="px-6 py-4">{employee.address}</td>
               <td className="px-6 py-4">{employee.position}</td>
               <td className="px-6 py-4">{employee.salary}</td>
+              <td className="px-6 py-4">
+                <button
+                  onClick={() => handleEdit(employee)}
+                  className="text-blue-600 hover:text-blue-900"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(employee)}
+                  className="text-red-600 hover:text-red-900 ml-4"
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+      {isModalOpen && (
+        <EditModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          employee={selectedEmployee}
+          onSubmit={handleSubmitModal}
+        />
+      )}
     </div>
   );
 }
