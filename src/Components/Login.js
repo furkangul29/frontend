@@ -42,7 +42,7 @@ function Login() {
       if (response.status === 201) {
         if (response.data.success) {
           toast.success("Başarılı giriş!");
-          navigate("/home");
+          navigate("/data-table");
         } else {
           toast.error(response.data.message);
         }

@@ -4,14 +4,16 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
 const ConfirmDeleteModal = ({ isOpen, toggle, onConfirm }) => {
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
-      <ModalHeader toggle={toggle}>Confirm Delete</ModalHeader>
-      <ModalBody>Are you sure you want to delete this employee?</ModalBody>
+      <ModalHeader toggle={toggle}>Onay</ModalHeader>
+      <ModalBody>
+        Bu Çalışanı sistemden silmek istediğinize emin misiniz?
+      </ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={toggle}>
-          No
+          Hayır
         </Button>
         <Button color="danger" onClick={onConfirm}>
-          Yes
+          Evet
         </Button>
       </ModalFooter>
     </Modal>

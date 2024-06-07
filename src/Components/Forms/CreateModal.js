@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function UpdateModal(props) {
+function CreateModal(props) {
   const [form, setForm] = useState({
     name: "",
     lastName: "",
@@ -12,6 +12,7 @@ function UpdateModal(props) {
     address: "",
     position: "",
     salary: "",
+    tc: "",
   });
 
   const handleChange = (e) => {
@@ -25,26 +26,27 @@ function UpdateModal(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(
-        `http://localhost:5000/api/update-employee/${props.item._id}`,
+      const response = await axios.post(
+        "http://localhost:5000/api/create-employee",
         form
       );
       if (props.updateState) {
         props.updateState(response.data.updatedEmployee);
-        toast.success("Çalışan Başarı İle Güncellendi", {});
+        toast.success("Çalışan Sisteme Başarı İle Eklendi", {});
       }
       props.toggle();
       window.location.reload();
     } catch (error) {
       console.error("Error submitting form:", error);
-      toast.error("An error occurred while updating the employee.");
+      toast.error("An error occurred while creating the employee.");
     }
   };
 
   useEffect(() => {
     if (props.item) {
-      const { name, lastName, phone, address, position, salary } = props.item;
-      setForm({ name, lastName, phone, address, position, salary });
+      const { name, lastName, phone, address, position, salary, tc } =
+        props.item;
+      setForm({ name, lastName, phone, address, position, salary, tc });
     }
   }, [props.item]);
 
@@ -52,12 +54,14 @@ function UpdateModal(props) {
     <div
       style={{
         display: "flex",
-        justifyContent: "center",
+        flexDirection: "column",
         alignItems: "center",
-        height: "100vh",
       }}
     >
-      <form onSubmit={handleSubmit} style={{ maxWidth: "400px" }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ marginTop: "50px", maxWidth: "400px" }}
+      >
         <div style={{ marginBottom: "10px" }}>
           <FormGroup>
             <Label for="name">Ad:</Label>
@@ -85,6 +89,15 @@ function UpdateModal(props) {
               type="text"
               name="phone"
               value={form.phone}
+              onChange={handleChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label for="tc">TC:</Label>
+            <Input
+              type="text"
+              name="tc"
+              value={form.tc}
               onChange={handleChange}
             />
           </FormGroup>
@@ -127,4 +140,4 @@ function UpdateModal(props) {
   );
 }
 
-export default UpdateModal;
+export default CreateModal;

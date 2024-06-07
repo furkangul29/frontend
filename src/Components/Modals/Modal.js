@@ -1,30 +1,36 @@
 import React, { useState } from "react";
 import { Button, Modal, ModalHeader, ModalBody } from "reactstrap";
-import axios from "axios";
+import CreateModal from "../Forms/CreateModal";
 import UpdateModal from "../Forms/UpdateModal";
 
 function ModalForm(props) {
   const [modal, setModal] = useState(false);
 
-  const toggle = () => {
-    setModal(!modal);
+  // Modal'ı açma fonksiyonu
+  const openModal = () => {
+    setModal(true);
+  };
+
+  // Modal'ı kapatma fonksiyonu
+  const closeModal = () => {
+    setModal(false);
   };
 
   const closeBtn = (
-    <button className="close" onClick={toggle}>
+    <button className="close" onClick={closeModal}>
       &times;
     </button>
   );
-  const label = props.buttonLabel;
 
+  const label = props.buttonLabel;
   let button = "";
   let title = "";
 
-  if (label === "Edit") {
+  if (label === "Düzenle") {
     button = (
       <Button
         color="warning"
-        onClick={toggle}
+        onClick={openModal}
         style={{ float: "left", marginRight: "10px" }}
       >
         {label}
@@ -35,8 +41,8 @@ function ModalForm(props) {
     button = (
       <Button
         color="success"
-        onClick={toggle}
-        style={{ float: "left", marginRight: "10px" }}
+        onClick={openModal}
+        style={{ float: "right", marginRight: "10px" }}
       >
         {label}
       </Button>
@@ -47,16 +53,11 @@ function ModalForm(props) {
   const handleSubmit = async (formData) => {
     try {
       if (props.item) {
-        await axios.put(
-          `http://localhost:5000/api/employee/${props.item.id}`,
-          formData
-        );
-        props.updateState(formData);
+        await props.onSubmit(formData);
       } else {
-        await axios.post("http://localhost:5000/api/employee", formData);
-        props.addItemToState(formData);
+        await props.onSubmit(formData);
       }
-      toggle();
+      closeModal();
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -67,20 +68,24 @@ function ModalForm(props) {
       {button}
       <Modal
         isOpen={modal}
-        toggle={toggle}
+        toggle={closeModal}
         className={props.className}
         backdrop={"static"}
         keyboard={false}
       >
-        <ModalHeader toggle={toggle} close={closeBtn}>
+        <ModalHeader toggle={closeModal} close={closeBtn}>
           {title}
         </ModalHeader>
         <ModalBody>
-          <UpdateModal
-            onSubmit={handleSubmit}
-            toggle={toggle}
-            item={props.item}
-          />
+          {label === "Düzenle" ? (
+            <UpdateModal
+              onSubmit={handleSubmit}
+              toggle={closeModal}
+              item={props.item}
+            />
+          ) : (
+            <CreateModal onSubmit={handleSubmit} toggle={closeModal} />
+          )}
         </ModalBody>
       </Modal>
     </div>

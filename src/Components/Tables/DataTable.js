@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button } from "reactstrap";
+import CreateModal from "../Forms/CreateModal";
 import ModalForm from "../Modals/Modal";
 import axios from "axios";
 import ConfirmDeleteModal from "../Modals/ConfirmDeleteModal";
 
 function DataTable() {
   const [employees, setEmployees] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
 
   useEffect(() => {
@@ -24,13 +26,16 @@ function DataTable() {
     }
   };
 
+  const toggleCreateModal = () => setShowCreateModal(!showCreateModal);
+  const toggleDeleteModal = () => setShowDeleteModal(!showDeleteModal);
+
   const handleDeleteClick = (id) => {
     setEmployeeToDelete(id);
-    setShowModal(true);
+    toggleDeleteModal();
   };
 
   const handleConfirmDelete = async () => {
-    setShowModal(false);
+    toggleDeleteModal();
     if (employeeToDelete) {
       try {
         await axios.delete(
@@ -43,59 +48,64 @@ function DataTable() {
       } catch (error) {
         console.error("Error deleting employee:", error);
       }
-    } else {
-      console.error("Employee ID is null or undefined");
     }
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setEmployeeToDelete(null);
+  const handleAddEmployee = (newEmployee) => {
+    setEmployees([...employees, newEmployee]);
+  };
+
+  const handleUpdateEmployee = (updatedEmployee) => {
+    setEmployees(
+      employees.map((employee) =>
+        employee._id === updatedEmployee._id ? updatedEmployee : employee
+      )
+    );
   };
 
   return (
     <div className="text-center">
-      {" "}
-      {/* Div eklendi ve className ile ortalamak için gerekli stil uygulandı */}
-      <h1 className="my-4 text-3xl font-bold">
-        Çalışan Bilgi Yönetim Sistemi
-      </h1>{" "}
-      {/* Başlık eklendi */}
+      <h1 className="my-4 text-3xl font-bold">Çalışan Bilgi Yönetim Sistemi</h1>
+      <div className="text-right mb-4">
+        <Button color="success" onClick={toggleCreateModal}>
+          Yeni Çalışan Ekle
+        </Button>
+      </div>
       <Table responsive hover>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Last Name</th>
-            <th>Phone</th>
+            <th>Ad</th>
+            <th>Soyad</th>
+            <th>Telefon</th>
             <th>TC</th>
-            <th>Address</th>
-            <th>Position</th>
-            <th>Salary</th>
-            <th>Actions</th>
+            <th>Adres</th>
+            <th>Görev</th>
+            <th>Maaş</th>
+            <th>İşlemler</th>
           </tr>
         </thead>
         <tbody>
           {employees.map((employee) => (
-            <tr key={employee._id}>
-              <td className="px-6 py-4">{employee.name}</td>
-              <td className="px-6 py-4">{employee.lastName}</td>
-              <td className="px-6 py-4">{employee.phone}</td>
-              <td className="px-6 py-4">{employee.tc}</td>
-              <td className="px-6 py-4">{employee.address}</td>
-              <td className="px-6 py-4">{employee.position}</td>
-              <td className="px-6 py-4">{employee.salary}</td>
+            <tr key={employee?._id}>
+              <td className="px-6 py-4">{employee?.name}</td>
+              <td className="px-6 py-4">{employee?.lastName}</td>
+              <td className="px-6 py-4">{employee?.phone}</td>
+              <td className="px-6 py-4">{employee?.tc}</td>
+              <td className="px-6 py-4">{employee?.address}</td>
+              <td className="px-6 py-4">{employee?.position}</td>
+              <td className="px-6 py-4">{employee?.salary}</td>
               <td className="px-6 py-4">
                 <div className="flex justify-center space-x-4">
                   <ModalForm
-                    buttonLabel="Edit"
+                    buttonLabel="Düzenle"
                     item={employee}
-                    fetchEmployees={fetchEmployees}
+                    onSubmit={handleUpdateEmployee}
                   />
                   <Button
                     color="danger"
-                    onClick={() => handleDeleteClick(employee._id)}
+                    onClick={() => handleDeleteClick(employee?._id)}
                   >
-                    Del
+                    Sil
                   </Button>
                 </div>
               </td>
@@ -103,9 +113,16 @@ function DataTable() {
           ))}
         </tbody>
       </Table>
+      <CreateModal
+        buttonLabel="Yeni Çalışan Ekle"
+        isOpen={showCreateModal}
+        toggle={toggleCreateModal} // toggle özelliği doğru bir şekilde iletiliyor
+        updateState={handleAddEmployee}
+      />
+
       <ConfirmDeleteModal
-        isOpen={showModal}
-        toggle={handleCloseModal}
+        isOpen={showDeleteModal}
+        toggle={toggleDeleteModal}
         onConfirm={handleConfirmDelete}
       />
     </div>
