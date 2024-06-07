@@ -1,19 +1,10 @@
 import React, { useState } from "react";
 import "../App.css";
-import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useEffect } from "react";
 
-const LoginSchema = Yup.object().shape({
-  email: Yup.string()
-    .required("Email is required!")
-    .email("Invalid email address"),
-  password: Yup.string()
-    .required("Password is required!")
-    .min(4, "Password is too short!"),
-});
 function Login() {
   useEffect(() => {
     const script = document.createElement("script");

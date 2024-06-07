@@ -57,72 +57,74 @@ function UpdateModal(props) {
         height: "100vh",
       }}
     >
-      <form onSubmit={handleSubmit} style={{ maxWidth: "400px" }}>
-        <div style={{ marginBottom: "10px" }}>
-          <FormGroup>
-            <Label for="name">Ad:</Label>
-            <Input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="lastName">Soyad:</Label>
-            <Input
-              type="text"
-              name="lastName"
-              value={form.lastName}
-              onChange={handleChange}
-            />
-          </FormGroup>
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <FormGroup>
-            <Label for="phone">Telefon:</Label>
-            <Input
-              type="text"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="address">Adres:</Label>
-            <Input
-              type="text"
-              name="address"
-              value={form.address}
-              onChange={handleChange}
-            />
-          </FormGroup>
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <FormGroup>
-            <Label for="position">Görev:</Label>
-            <Input
-              type="text"
-              name="position"
-              value={form.position}
-              onChange={handleChange}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="salary">Maaş:</Label>
-            <Input
-              type="text"
-              name="salary"
-              value={form.salary}
-              onChange={handleChange}
-            />
-          </FormGroup>
-        </div>
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <Button type="submit">Kaydet</Button>
-        </div>
-      </form>
-      <ToastContainer />
+      <div style={{ width: "100%", maxWidth: "400px" }}>
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: "10px" }}>
+            <FormGroup>
+              <Label for="name">Ad:</Label>
+              <Input
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="lastName">Soyad:</Label>
+              <Input
+                type="text"
+                name="lastName"
+                value={form.lastName}
+                onChange={handleChange}
+              />
+            </FormGroup>
+          </div>
+          <div style={{ marginBottom: "10px" }}>
+            <FormGroup>
+              <Label for="phone">Telefon:</Label>
+              <Input
+                type="text"
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="address">Adres:</Label>
+              <Input
+                type="text"
+                name="address"
+                value={form.address}
+                onChange={handleChange}
+              />
+            </FormGroup>
+          </div>
+          <div style={{ marginBottom: "10px" }}>
+            <FormGroup>
+              <Label for="position">Görev:</Label>
+              <Input
+                type="text"
+                name="position"
+                value={form.position}
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="salary">Maaş:</Label>
+              <Input
+                type="text"
+                name="salary"
+                value={form.salary}
+                onChange={handleChange}
+              />
+            </FormGroup>
+          </div>
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <Button type="submit">Kaydet</Button>
+          </div>
+        </form>
+        <ToastContainer position="top-right" autoClose={4000} theme="colored" />
+      </div>
     </div>
   );
 }

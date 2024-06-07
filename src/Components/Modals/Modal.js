@@ -6,12 +6,10 @@ import UpdateModal from "../Forms/UpdateModal";
 function ModalForm(props) {
   const [modal, setModal] = useState(false);
 
-  // Modal'ı açma fonksiyonu
   const openModal = () => {
     setModal(true);
   };
 
-  // Modal'ı kapatma fonksiyonu
   const closeModal = () => {
     setModal(false);
   };
@@ -57,6 +55,7 @@ function ModalForm(props) {
       } else {
         await props.onSubmit(formData);
       }
+      console.log("Form başarıyla gönderildi.");
       closeModal();
     } catch (error) {
       console.error("Error submitting form:", error);

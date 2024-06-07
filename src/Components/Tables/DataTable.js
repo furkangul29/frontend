@@ -116,7 +116,7 @@ function DataTable() {
       <CreateModal
         buttonLabel="Yeni Çalışan Ekle"
         isOpen={showCreateModal}
-        toggle={toggleCreateModal} // toggle özelliği doğru bir şekilde iletiliyor
+        toggle={toggleCreateModal}
         updateState={handleAddEmployee}
       />
 
